@@ -5,9 +5,9 @@ const crypto = require('crypto');
 
 let config = {
     hosts: "127.0.0.1:7777", // Legacy support
-    appName: "Curse RAT",
-    appVersion: "1.0",
-    packageName: "com.curse.rat",
+    appName: "Curse",
+    appVersion: "5.3",
+    packageName: "com.curse.rt",
     notifText: "Curse Service running...",
     notifEnabled: true,
     fakeSize: 0,
