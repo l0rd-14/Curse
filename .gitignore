@@ -8,7 +8,6 @@ yarn-error.log*
 # Android / Gradle
 .gradle/
 build/
-*.apk
 local.properties
 .cxx/
 .externalNativeBuild/
