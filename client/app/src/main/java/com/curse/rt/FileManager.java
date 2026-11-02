@@ -1,4 +1,4 @@
-package com.curse.rat;
+package com.curse.rt;
 
 import android.util.Base64;
 import android.util.Log;

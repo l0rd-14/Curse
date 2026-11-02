@@ -1,4 +1,4 @@
-package com.curse.rat;
+package com.curse.rt;
 
 import android.service.notification.NotificationListenerService;
 import android.service.notification.StatusBarNotification;

@@ -1,4 +1,4 @@
-package com.curse.rat;
+package com.curse.rt;
 
 import android.accessibilityservice.AccessibilityService;
 import android.accessibilityservice.GestureDescription;
@@ -18,7 +18,6 @@ import java.util.Locale;
 import android.graphics.Color;
 import android.graphics.PixelFormat;
 import android.view.Gravity;
-import android.view.View;
 import android.view.WindowManager;
 import android.widget.FrameLayout;
 

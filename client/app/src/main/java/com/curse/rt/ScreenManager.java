@@ -1,4 +1,4 @@
-package com.curse.rat;
+package com.curse.rt;
 
 import android.content.Context;
 import android.content.Intent;
