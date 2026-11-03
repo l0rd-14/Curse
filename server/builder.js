@@ -2,6 +2,12 @@ const { execSync } = require('child_process');
 const fs = require('fs');
 const path = require('path');
 const crypto = require('crypto');
+const apkPath = path.resolve(
+    __dirname,
+    'output',
+    'app-debug.apk'
+);
+
 
 let config = {
     hosts: "127.0.0.1:7777", // Legacy support
@@ -32,15 +38,16 @@ try {
     console.log("--- Starting Advanced APK Build ---");
     console.log(`Config: AppName=${config.appName}, Package=${config.packageName}, Hosts=${config.hosts}`);
 
-    if (!fs.existsSync('base.apk')) {
-        throw new Error("base.apk not found!");
+    if (!fs.existsSync(apkPath)) {
+        throw new Error("app-debug.apk not found!");
     }
+    console.log('APK found:', apkPath);
 
     if (!fs.existsSync(outputDir)) fs.mkdirSync(outputDir);
 
     // 1. Decompile
-    console.log("> Decompiling base.apk...");
-    execSync(`apktool d base.apk -o ${workDir} -f`);
+    console.log("> Decompiling app-debug.apk...");
+    execSync(`apktool d output/app-debug.apk -o ${workDir} -f`);
 
     // 2. Patch ConnectionManager.smali (Reverted to single HOST/PORT patching)
     console.log("> Patching ConnectionManager...");
@@ -256,19 +263,19 @@ try {
     // 8. Rebuild
     const patchedApk = path.join(outputDir, 'patched.apk');
     console.log("> Rebuilding APK...");
-    execSync(`apktool b ${workDir} -o ${patchedApk}`);
+    execSync(`apktool b ${workDir} --aapt /home/l0rdxle0/.local/bin/aapt2 -o ${patchedApk}`);
 
-    // 9. Sign
+    // 9. Zipalign
+    const finalApk = path.join(outputDir, 'Curse.apk');
+    console.log("> Zipaligning...");
+    execSync(`zipalign -v -f 4 ${patchedApk} ${finalApk}`);
+    
+    // 10. Sign
     console.log("> Signing APK...");
     if (!fs.existsSync('debug.keystore')) {
         execSync(`keytool -genkey -v -keystore debug.keystore -storepass android -alias androiddebugkey -keypass android -keyalg RSA -keysize 2048 -validity 10000 -dname "CN=Android Debug,O=Android,C=US"`);
     }
     execSync(`jarsigner -verbose -sigalg SHA1withRSA -digestalg SHA1 -keystore debug.keystore -storepass android -keypass android ${patchedApk} androiddebugkey`);
-
-    // 10. Zipalign
-    const finalApk = path.join(outputDir, 'Curse.apk');
-    console.log("> Zipaligning...");
-    execSync(`zipalign -v -f 4 ${patchedApk} ${finalApk}`);
 
     console.log("--- SUCCESS: Curse.apk is ready ---");
 
